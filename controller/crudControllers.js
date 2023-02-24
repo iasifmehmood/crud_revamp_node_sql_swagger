@@ -25,7 +25,7 @@ const addData = async (req, res) => {
     logger.error(err);
     res.status(400).json({
       status: "fail (catch)",
-      message: err.message + " Inserted data is not correct",
+      message: err.message + " Inserted data is not correct or already exists",
     });
   }
 };

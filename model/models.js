@@ -32,27 +32,32 @@ exports.addModel = async values => {
   const insert_query =
     "INSERT into crud_table (email,plain_password,protected_password,name,cnic,designation,contact) values(?,?,?,?,?,?,?)";
 
-  if (validator.validate(email) && schema.validate(plain_password)) {
-    return connection.promise().query(
-      insert_query, //2. saving in database
-      data
-    );
-  } else {
-    logger.info(
-      "Email is invalid/Passwword: password must have min 8 character (Uppercase,Lowercase and digits only) "
-    );
-  }
+  const find_email = "SELECT COUNT(*) AS count FROM crud_table WHERE email = ?";
 
-  if (validator.validate(email) && schema.validate(plain_password)) {
-    return connection.promise().query(
-      insert_query, //2. saving in database
-      data
-    );
-  } else {
-    logger.info(
-      "Email is invalid/Passwword: password must have min 8 character (Uppercase,Lowercase and digits only) "
-    );
-  }
+  connection.query(find_email, email, (error, results) => {
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const count = results[0].count;
+
+    if (count > 0) {
+      console.log("Email already exists in the database");
+      return;
+    } else {
+      if (validator.validate(email) && schema.validate(plain_password)) {
+        return connection.promise().query(
+          insert_query, //2. saving in database
+          data
+        );
+      } else {
+        logger.info(
+          "Email is invalid/Passwword: password must have min 8 character (Uppercase,Lowercase and digits only) "
+        );
+      }
+    }
+  });
 };
 
 exports.getModel = async () => {
