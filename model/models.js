@@ -36,14 +36,14 @@ exports.addModel = async values => {
 
   connection.query(find_email, email, (error, results) => {
     if (error) {
-      console.error(error);
+      logger.info(error);
       return;
     }
 
     const count = results[0].count;
 
     if (count > 0) {
-      console.log("Email already exists in the database");
+      logger.info("Email already exists in the database");
       return;
     } else {
       if (validator.validate(email) && schema.validate(plain_password)) {
