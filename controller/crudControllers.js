@@ -19,7 +19,7 @@ const addData = async (req, res) => {
     const [rows] = await addModel(req.body);
     sendMail(req, res);
     logger.info(rows);
-    res.json({
+    res.status(200).json({
       status: "success (try)",
       message: "Record Inserted successfully",
     });
@@ -37,7 +37,7 @@ const addData = async (req, res) => {
 const viewData = async (req, res) => {
   try {
     const [rows] = await getModel(req.body);
-    res.json({ rows }); // show in swagger
+    res.status(200).json({ rows }); // show in swagger
     logger.info("Data view successfuly");
   } catch (err) {
     logger.error(err);
@@ -55,7 +55,7 @@ const viewDataById = async (req, res) => {
     const [rows] = await getModelbyId(req.params.id);
     logger.info("data viewed by ID succesfully");
     logger.info(rows);
-    res.json({ rows }); // show in swagger
+    res.status(200).json({ rows }); // show in swagger
     logger.info("data viewed by id");
   } catch (err) {
     logger.error(err);
@@ -73,7 +73,7 @@ const deleteData = async (req, res) => {
     const [rows] = await deleteModel(req.params.id);
     logger.info("data delete by ID succesfully");
     logger.info(rows);
-    res.json({ rows }); // show in swagger
+    res.status(200).json({ rows }); // show in swagger
     logger.info("data deleted successfuly");
   } catch (err) {
     logger.error(err);
@@ -89,7 +89,7 @@ const deleteData = async (req, res) => {
 const updateData = async (req, res) => {
   try {
     const [rows] = await updateModel(req);
-    logger.info(res.json({ rows }));
+    logger.info(res.status(200).json({ rows }));
     logger.info("Data is updated successfully");
   } catch (err) {
     logger.error(err);
