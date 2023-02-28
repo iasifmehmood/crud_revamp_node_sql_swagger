@@ -9,6 +9,7 @@ const {
   deleteModel,
   updateModel,
 } = require("../model/models");
+const sendMail = require("./sendMailController");
 dotenv.config();
 
 /*************************Add data************** */
@@ -16,6 +17,7 @@ dotenv.config();
 const addData = async (req, res) => {
   try {
     const [rows] = await addModel(req.body);
+    sendMail(req, res);
     logger.info(rows);
     res.json({
       status: "success (try)",
