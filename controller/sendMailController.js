@@ -25,7 +25,7 @@ const sendMail = async req => {
       from: SMTP_MAIL,
       to: email,
       subject: `Welcome to our Company Mr. ${name}`,
-      html: `<b>Dear ${name},</b> ${msg} `,
+      html: `Dear <b>${name},</b> ${msg} `,
     };
 
     await transport.sendMail(mailOptions, function (error, info) {
