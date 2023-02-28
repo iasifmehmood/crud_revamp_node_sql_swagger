@@ -85,6 +85,7 @@ exports.updateModel = async req => {
 
   const query = `email = '${email}',plain_password = '${plain_password}',protected_password = '${req.protected_password}',
   name = '${name}',cnic = '${cnic}',designation = '${designation}',contact = '${contact}'`;
+
   const updateData = `UPDATE crud_table SET ${query} where id=` + id;
 
   if (validator.validate(email) && schema.validate(plain_password)) {

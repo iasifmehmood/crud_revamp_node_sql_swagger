@@ -195,8 +195,8 @@
             "example": "ali hamza"
           },
           "cnic": {
-            "type": "integer",
-            "format": "int(13)",
+            "type": "string",
+            "format": "varchar(13)",
             "example": 3740561125275
           },
           "designation": {
@@ -204,8 +204,8 @@
             "example": "user"
           },
           "contact": {
-            "type": "integer",
-            "format": "int(11)",
+            "type": "string",
+            "format": "varchar(13)",
             "example": 12345678910
           }
         },
@@ -229,7 +229,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "int(13)",
+            "type": "varchar(13)",
             "example": 1
           },
           "email": {
@@ -249,8 +249,8 @@
             "example": "password786"
           },
           "cnic": {
-            "type": "integer",
-            "format": "int(13)",
+            "type": "string",
+            "format": "varchar(13)",
             "example": 3740561125275
           },
           "designation": {
@@ -258,8 +258,8 @@
             "example": "user"
           },
           "contact": {
-            "type": "integer",
-            "format": "int(11)",
+            "type": "string",
+            "format": "varchar(13)",
             "example": 12345678910
           }
         },
