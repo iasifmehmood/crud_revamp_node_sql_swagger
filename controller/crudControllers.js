@@ -1,6 +1,4 @@
-const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
-const connection = require("../config/db");
 const logger = require("../logger");
 const {
   addModel,
@@ -9,15 +7,18 @@ const {
   deleteModel,
   updateModel,
 } = require("../model/models");
+const sendMail = require("./sendMailController");
 dotenv.config();
 
 /*************************Add data************** */
 
 const addData = async (req, res) => {
   try {
-    const [rows] = await addModel(req.body);
+    const registration_data = req.body;
+    const [rows] = await addModel(registration_data);
+    sendMail(registration_data.email, registration_data.name);
     logger.info(rows);
-    res.json({
+    res.status(200).json({
       status: "success (try)",
       message: "Record Inserted successfully",
     });
@@ -34,8 +35,9 @@ const addData = async (req, res) => {
 
 const viewData = async (req, res) => {
   try {
-    const [rows] = await getModel(req.body);
-    res.json({ rows }); // show in swagger
+    const registration_data = req.body;
+    const [rows] = await getModel(registration_data);
+    res.status(200).json({ rows }); // show in swagger
     logger.info("Data view successfuly");
   } catch (err) {
     logger.error(err);
@@ -50,10 +52,11 @@ const viewData = async (req, res) => {
 
 const viewDataById = async (req, res) => {
   try {
-    const [rows] = await getModelbyId(req.params.id);
+    const registration_id = req.params.id;
+    const [rows] = await getModelbyId(registration_id);
     logger.info("data viewed by ID succesfully");
     logger.info(rows);
-    res.json({ rows }); // show in swagger
+    res.status(200).json({ rows }); // show in swagger
     logger.info("data viewed by id");
   } catch (err) {
     logger.error(err);
@@ -68,10 +71,11 @@ const viewDataById = async (req, res) => {
 
 const deleteData = async (req, res) => {
   try {
-    const [rows] = await deleteModel(req.params.id);
+    const registration_id = req.params.id;
+    const [rows] = await deleteModel(registration_id);
     logger.info("data delete by ID succesfully");
     logger.info(rows);
-    res.json({ rows }); // show in swagger
+    res.status(200).json({ rows }); // show in swagger
     logger.info("data deleted successfuly");
   } catch (err) {
     logger.error(err);
@@ -86,8 +90,9 @@ const deleteData = async (req, res) => {
 
 const updateData = async (req, res) => {
   try {
-    const [rows] = await updateModel(req);
-    logger.info(res.json({ rows }));
+    const registration_data = req;
+    const [rows] = await updateModel(registration_data);
+    logger.info(res.status(200).json({ rows }));
     logger.info("Data is updated successfully");
   } catch (err) {
     logger.error(err);

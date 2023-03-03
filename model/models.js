@@ -2,27 +2,18 @@ const bcrypt = require("bcrypt");
 const connection = require("../config/db");
 const validator = require("email-validator");
 const logger = require("../logger");
-const passwordValidator = require("password-validator");
-const schema = new passwordValidator();
-schema
-  .is()
-  .min(8) // Minimum length 8
-  .has()
-  .uppercase() // Must have uppercase letters
-  .has()
-  .lowercase() // Must have lowercase letters
-  .has()
-  .digits(); // Must have digits
+const email_schema = require("../middlewares/passwordValidation");
 
-exports.addModel = async values => {
-  const { email, name, cnic, designation, contact, plain_password } = values;
+exports.addModel = async registration_data => {
+  const { email, name, cnic, designation, contact, plain_password } =
+    registration_data;
 
-  values.protected_password = await bcrypt.hash(plain_password, 13);
+  registration_data.protected_password = await bcrypt.hash(plain_password, 13);
 
   const data = [
     email,
     plain_password,
-    values.protected_password,
+    registration_data.protected_password,
     name,
     cnic,
     designation,
@@ -32,32 +23,16 @@ exports.addModel = async values => {
   const insert_query =
     "INSERT into crud_table (email,plain_password,protected_password,name,cnic,designation,contact) values(?,?,?,?,?,?,?)";
 
-  const find_email = "SELECT COUNT(*) AS count FROM crud_table WHERE email = ?";
-
-  connection.query(find_email, email, (error, results) => {
-    if (error) {
-      logger.info(error);
-      return;
-    }
-
-    const count = results[0].count;
-
-    if (count > 0) {
-      logger.info("Email already exists in the database");
-      return;
-    } else {
-      if (validator.validate(email) && schema.validate(plain_password)) {
-        return connection.promise().query(
-          insert_query, //2. saving in database
-          data
-        );
-      } else {
-        logger.info(
-          "Email is invalid/Passwword: password must have min 8 character (Uppercase,Lowercase and digits only) "
-        );
-      }
-    }
-  });
+  if (validator.validate(email) && email_schema.validate(plain_password)) {
+    return connection.promise().query(
+      insert_query, //2. saving in database
+      data
+    );
+  } else {
+    logger.info(
+      "Email is invalid/Passwword: password must have min 8 character (Uppercase,Lowercase and digits only) "
+    );
+  }
 };
 
 exports.getModel = async () => {
@@ -65,29 +40,29 @@ exports.getModel = async () => {
   return connection.promise().query(viewAllData);
 };
 
-exports.getModelbyId = async req => {
-  const id = req;
+exports.getModelbyId = async registration_id => {
   const viewAllDataById = "select * from crud_table WHERE id=?";
-  return connection.promise().query(viewAllDataById, [id]);
+  return connection.promise().query(viewAllDataById, [registration_id]);
 };
 
-exports.deleteModel = async req => {
-  const id = req;
+exports.deleteModel = async registration_id => {
   const deleteData = "DELETE FROM crud_table WHERE id=?";
-  return connection.promise().query(deleteData, [id]);
+  return connection.promise().query(deleteData, [registration_id]);
 };
 
-exports.updateModel = async req => {
-  const user = req.body;
-  const { id } = req.params;
-  const { email, name, cnic, designation, contact, plain_password } = req.body;
-  req.protected_password = await bcrypt.hash(plain_password, 13);
+exports.updateModel = async registration_data => {
+  const user = registration_data.body;
+  const { id } = registration_data.params;
+  const { email, name, cnic, designation, contact, plain_password } =
+    registration_data.body;
+  registration_data.protected_password = await bcrypt.hash(plain_password, 13);
 
-  const query = `email = '${email}',plain_password = '${plain_password}',protected_password = '${req.protected_password}',
+  const query = `email = '${email}',plain_password = '${plain_password}',protected_password = '${registration_data.protected_password}',
   name = '${name}',cnic = '${cnic}',designation = '${designation}',contact = '${contact}'`;
+
   const updateData = `UPDATE crud_table SET ${query} where id=` + id;
 
-  if (validator.validate(email) && schema.validate(plain_password)) {
+  if (validator.validate(email) && email_schema.validate(plain_password)) {
     return connection.promise().query(
       updateData, //2. saving in database
       [user]
