@@ -4,11 +4,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { SMTP_MAIL, SMTP_PASSWORD } = process.env;
 
-const sendMail = async req => {
-  const email = req.body.email;
-  const name = req.body.name;
-  const msg =
-    "It brings me great pleasure to extend a warm welcome to you as a Junior Software Engineer at Softoo Pvt Ltd. We are thrilled that you have joined our team and are eager to witness the value you will bring to our company.";
+const sendMail = async (email, name) => {
+  const msg = "Thanks for registering";
   try {
     const transport = await nodemailer.createTransport({
       host: "smtp.gmail.com",

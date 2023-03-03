@@ -184,20 +184,20 @@
         "properties": {
           "email": {
             "type": "string",
-            "example": "asif@email.com"
+            "example": "asif-mehmood@hotmail.com"
           },
           "plain_password": {
             "type": "string",
-            "example": "asifmehmood"
+            "example": "asifmehmooD123"
           },
           "name": {
             "type": "string",
-            "example": "ali hamza"
+            "example": "Asif"
           },
           "cnic": {
             "type": "string",
             "format": "varchar(13)",
-            "example": 3740561125275
+            "example": "3740561125275"
           },
           "designation": {
             "type": "string",
@@ -206,7 +206,7 @@
           "contact": {
             "type": "string",
             "format": "varchar(13)",
-            "example": 12345678910
+            "example": "03015742242"
           }
         },
 
