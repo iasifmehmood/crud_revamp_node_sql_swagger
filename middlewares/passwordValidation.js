@@ -1,6 +1,6 @@
 const passwordValidator = require("password-validator");
-const email_schema = new passwordValidator();
-email_schema
+const password_schema = new passwordValidator();
+password_schema
   .is()
   .min(8) // Minimum length 8
   .has()
@@ -10,4 +10,4 @@ email_schema
   .has()
   .digits(); // Must have digits
 
-module.exports = email_schema;
+module.exports = password_schema;

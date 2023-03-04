@@ -1,29 +1,19 @@
 const bcrypt = require("bcrypt");
 const connection = require("../config/db");
-const validator = require("email-validator");
 const logger = require("../logger");
-const email_schema = require("../middlewares/passwordValidation");
+const password_schema = require("../middlewares/passwordValidation");
+const email_validator = require("../middlewares/emailValidation");
 
 exports.addModel = async registration_data => {
-  const { email, name, cnic, designation, contact, plain_password } =
-    registration_data;
+  const { email, password, cnic } = registration_data;
 
-  registration_data.protected_password = await bcrypt.hash(plain_password, 13);
+  registration_data.password = await bcrypt.hash(password, 13);
 
-  const data = [
-    email,
-    plain_password,
-    registration_data.protected_password,
-    name,
-    cnic,
-    designation,
-    contact,
-  ];
+  const data = [email, registration_data.password, cnic];
 
-  const insert_query =
-    "INSERT into crud_table (email,plain_password,protected_password,name,cnic,designation,contact) values(?,?,?,?,?,?,?)";
+  const insert_query = "INSERT into users (email,password,cnic) values(?,?,?)";
 
-  if (validator.validate(email) && email_schema.validate(plain_password)) {
+  if (email_validator.validate(email) && password_schema.validate(password)) {
     return connection.promise().query(
       insert_query, //2. saving in database
       data
@@ -36,33 +26,31 @@ exports.addModel = async registration_data => {
 };
 
 exports.getModel = async () => {
-  const viewAllData = "select * from crud_table";
+  const viewAllData = "select * from users";
   return connection.promise().query(viewAllData);
 };
 
 exports.getModelbyId = async registration_id => {
-  const viewAllDataById = "select * from crud_table WHERE id=?";
+  const viewAllDataById = "select * from users WHERE id=?";
   return connection.promise().query(viewAllDataById, [registration_id]);
 };
 
 exports.deleteModel = async registration_id => {
-  const deleteData = "DELETE FROM crud_table WHERE id=?";
+  const deleteData = "DELETE FROM users WHERE id=?";
   return connection.promise().query(deleteData, [registration_id]);
 };
 
 exports.updateModel = async registration_data => {
   const user = registration_data.body;
   const { id } = registration_data.params;
-  const { email, name, cnic, designation, contact, plain_password } =
-    registration_data.body;
-  registration_data.protected_password = await bcrypt.hash(plain_password, 13);
+  const { email, password, cnic } = registration_data.body;
+  registration_data.password = await bcrypt.hash(password, 13);
 
-  const query = `email = '${email}',plain_password = '${plain_password}',protected_password = '${registration_data.protected_password}',
-  name = '${name}',cnic = '${cnic}',designation = '${designation}',contact = '${contact}'`;
+  const query = `email = '${email}',password = '${registration_data.password}',cnic = '${cnic}'`;
 
-  const updateData = `UPDATE crud_table SET ${query} where id=` + id;
+  const updateData = `UPDATE users SET ${query} where id=` + id;
 
-  if (validator.validate(email) && email_schema.validate(plain_password)) {
+  if (email_validator.validate(email) && password_schema.validate(password)) {
     return connection.promise().query(
       updateData, //2. saving in database
       [user]
@@ -73,3 +61,41 @@ exports.updateModel = async registration_data => {
     );
   }
 };
+
+// exports.loginVerification = async (email, password, res) => {
+//   return connection
+//     .promise()
+//     .query(
+//       "SELECT * FROM users WHERE email = ?",
+//       [email],
+//       function (error, results, fields) {
+//         if (error) {
+//           console.log("error ocurred", error);
+//           res.send({
+//             code: 400,
+//             failed: "error ocurred",
+//           });
+//         } else {
+//           console.log("The solution is: ", results);
+//           if (results.length > 0) {
+//             if (results[0].password == password) {
+//               res.send({
+//                 code: 200,
+//                 success: "login sucessfull",
+//               });
+//             } else {
+//               res.send({
+//                 code: 204,
+//                 success: "Email and password does not match",
+//               });
+//             }
+//           } else {
+//             res.send({
+//               code: 204,
+//               success: "Email does not exits",
+//             });
+//           }
+//         }
+//       }
+//     );
+// };

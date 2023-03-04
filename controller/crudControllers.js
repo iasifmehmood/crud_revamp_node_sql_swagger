@@ -1,4 +1,3 @@
-const dotenv = require("dotenv");
 const logger = require("../logger");
 const {
   addModel,
@@ -6,8 +5,11 @@ const {
   getModelbyId,
   deleteModel,
   updateModel,
+  loginVerification,
 } = require("../model/models");
 const sendMail = require("./sendMailController");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 dotenv.config();
 
 /*************************Add data************** */
@@ -16,7 +18,7 @@ const addData = async (req, res) => {
   try {
     const registration_data = req.body;
     const [rows] = await addModel(registration_data);
-    sendMail(registration_data.email, registration_data.name);
+    // sendMail(registration_data.email, registration_data.name);
     logger.info(rows);
     res.status(200).json({
       status: "success (try)",
@@ -102,6 +104,38 @@ const updateData = async (req, res) => {
     });
   }
 };
+const connection = require("../config/db");
+const { query } = require("../config/db");
+
+const loginData = async (req, res) => {
+  const secretKey = process.env.secretKey;
+  let user_data = {
+    email: req.body.email,
+    password: req.body.password,
+  };
+  jwt.sign({ user_data }, secretKey, { expiresIn: "300s" }, (error, token) => {
+    if (error) {
+      logger.info("error happened while generating token", error);
+    } else {
+      res.json({ token });
+    }
+  });
+};
+
+const userProfile = (req, res) => {
+  const secretKey = process.env.secretKey;
+  logger.info(req.token);
+  jwt.verify(req.token, secretKey, (err, authData) => {
+    if (err) {
+      res.send({ result: "invalid token" });
+    } else {
+      res.json({
+        message: "token is valid",
+        authData,
+      });
+    }
+  });
+};
 
 module.exports = {
   viewData,
@@ -109,4 +143,6 @@ module.exports = {
   addData,
   deleteData,
   updateData,
+  loginData,
+  userProfile,
 };
