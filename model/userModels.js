@@ -18,7 +18,7 @@ exports.signupModel = async (registration_data, res) => {
 
         if (email_validator.validate(email)) {
           if (password_schema.validate(password)) {
-            await connection.promise().query(
+            return await connection.promise().query(
               insert_query, //2. saving in database
               data
             );
