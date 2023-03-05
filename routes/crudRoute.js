@@ -11,5 +11,6 @@ router.delete("/user/view/:id", controller.deleteData);
 router.put("/user/view/:id", controller.updateData);
 router.post("/login", controller.loginData);
 router.post("/profile", verifyToken, controller.userProfile);
+router.get("/logout", controller.logout);
 
 module.exports = router;
