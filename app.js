@@ -2,7 +2,7 @@ const express = require("express"); //express package initiated
 const app = express(); // express instance has been created and will be access by app variable
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const crud_routes = require("./routes/crudRoute.js");
+const user_routes = require("./route/userRoutes.js");
 
 /*********************Authen**************************** */
 const dotenv = require("dotenv");
@@ -24,6 +24,6 @@ app.get("/", (req, res) => {
   res.send("API running");
 });
 
-app.use("/", crud_routes);
+app.use("/", user_routes);
 
 module.exports = app;
