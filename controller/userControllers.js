@@ -14,7 +14,7 @@ const signup = async (req, res) => {
         status: "success",
         message: "record is added succesfully",
       });
-      sendMail(registration_data.email);
+      // sendMail(registration_data.email);
     }
     logger.info(results);
   } catch (error) {
@@ -24,12 +24,8 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   const secretKey = process.env.secretKey;
-  try {
-    const { email, password } = req.body;
-    await loginModel(email, password, secretKey, res);
-  } catch (err) {
-    logger.info(err);
-  }
+  const { email, password } = req.body;
+  await loginModel(email, password, secretKey, res);
 };
 
 const userProfile = (req, res) => {

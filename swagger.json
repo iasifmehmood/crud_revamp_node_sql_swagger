@@ -20,25 +20,7 @@
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "paths": {
-    "/user/view": {
-      "get": {
-        "tags": ["Employees"],
-        "summary": "Get all employees in system",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "array",
-              "$ref": "#/components/schemas/GetEmployee"
-            }
-          },
-          "400": {
-            "description": "SERVER ERROR"
-          }
-        }
-      }
-    },
-    "/user/add": {
+    "/adduser": {
       "post": {
         "tags": ["Employees"],
         "summary": "Create a new employee in system",
@@ -62,151 +44,71 @@
           "400": {
             "description": "Failed. Bad post data."
           },
+          "404": {
+            "description": "server cannot find the requested resource."
+          },
           "500": {
-            "description": "Server Error"
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/user/view/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID of the employee that we want to match",
-          "type": "string"
-        }
-      ],
-      "get": {
+    "/login": {
+      "post": {
         "tags": ["Employees"],
-        "summary": "Get employee with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Employee with id",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/components/schemas/Employee"
-            }
-          },
-          "400": {
-            "description": "Failed. Employee Id not valid"
-          },
-          "404": {
-            "description": "Failed. Employee not found."
-          }
-        }
-      },
-      "put": {
-        "summary": "Update employee with given ID",
-        "tags": ["Employees"],
+        "summary": "Create a new employee in system",
         "requestBody": {
           "description": "Employee Object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Employee"
+                "type": "object",
+                "$ref": "#/components/schemas/GetEmployee"
               }
             }
           }
         },
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Employee with new values of properties",
-            "type": "string"
-          }
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/components/schemas/Employee"
-            }
+            "description": "User login successfully"
           },
           "400": {
             "description": "Failed. Bad post data."
           },
           "404": {
-            "description": "Failed. Employee not found."
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete employee with given ID",
-        "tags": ["Employees"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Delete employee with id"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
+            "description": "server cannot find the requested resource."
           },
-          "400": {
-            "description": "Failed. Employee Id not valid"
-          },
-          "404": {
-            "description": "Failed. employee not found."
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
-    },
-    "/user/view/": {}
+    }
   },
   "components": {
     "schemas": {
       "Employee": {
-        "required": [
-          "email",
-          "plain_password",
-          "name",
-          "cnic",
-          "designation",
-          "contact"
-        ],
+        "required": ["email", "confirm_password", "password", "cnic"],
         "type": "object",
         "properties": {
           "email": {
             "type": "string",
             "example": "asif-mehmood@hotmail.com"
           },
-          "plain_password": {
+          "confirm_password": {
             "type": "string",
             "example": "asifmehmooD123"
           },
-          "name": {
+          "password": {
             "type": "string",
-            "example": "Asif"
+            "example": "asifmehmooD123"
           },
           "cnic": {
             "type": "string",
             "format": "varchar(13)",
             "example": "3740561125275"
-          },
-          "designation": {
-            "type": "string",
-            "example": "user"
-          },
-          "contact": {
-            "type": "string",
-            "format": "varchar(13)",
-            "example": "03015742242"
           }
         },
 
@@ -216,51 +118,16 @@
       },
 
       "GetEmployee": {
-        "required": [
-          "id",
-          "email",
-          "plain_password",
-          "protected_password",
-          "name",
-          "cnic",
-          "designation",
-          "contact"
-        ],
+        "required": ["email", "password"],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "varchar(13)",
-            "example": 1
-          },
           "email": {
             "type": "string",
             "example": "asif"
           },
-          "plain_password": {
+          "password": {
             "type": "string",
             "example": "asif@email.com"
-          },
-          "protected_password": {
-            "type": "string",
-            "example": "asif@password"
-          },
-          "name": {
-            "type": "string",
-            "example": "password786"
-          },
-          "cnic": {
-            "type": "string",
-            "format": "varchar(13)",
-            "example": 3740561125275
-          },
-          "designation": {
-            "type": "string",
-            "example": "user"
-          },
-          "contact": {
-            "type": "string",
-            "format": "varchar(13)",
-            "example": 12345678910
           }
         },
 

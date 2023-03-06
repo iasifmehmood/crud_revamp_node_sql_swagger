@@ -27,7 +27,7 @@ exports.signupModel = async (registration_data, res) => {
             logger.info(
               "Password must have min 8 character and must contain (Uppercase,Lowercase and digits only)  "
             );
-            return res.status(403).json({
+            return res.status(400).json({
               status: "incorrect password format",
               message:
                 "Password must have min 8 character and must contain (Uppercase,Lowercase and digits only) ",
@@ -37,20 +37,20 @@ exports.signupModel = async (registration_data, res) => {
           logger.info(
             "Incorrect email format. Email format should be:asif@email.com "
           );
-          return res.status(403).json({
+          return res.status(400).json({
             status: "incorrect email format",
             message: "email format should be: asif@email.com  ",
           });
         }
       } else {
         logger.info("incorrect cnic, enter 13 digit cnic");
-        return res.status(403).json({
+        return res.status(400).json({
           message: "incorrect cnic or enter 13 digit cnic",
         });
       }
     } else {
       logger.info("password does not match re-enter password");
-      return res.status(403).json({
+      return res.status(400).json({
         message: "password does not match re-enter password password ",
       });
     }
@@ -73,7 +73,7 @@ exports.loginModel = async (email, password, secretKey, res) => {
             message: "Please Provide an email and password",
           });
         }
-        await connection.query(
+        connection.query(
           "SELECT * FROM users WHERE email = ?",
           [email],
           async (err, results) => {
@@ -106,6 +106,7 @@ exports.loginModel = async (email, password, secretKey, res) => {
                 status: "success",
                 sucess: "User has been logged in",
               });
+              res.end();
             }
           }
         );
@@ -113,7 +114,7 @@ exports.loginModel = async (email, password, secretKey, res) => {
         logger.info(
           "Password must have min 8 character and must contain (Uppercase,Lowercase and digits only)  "
         );
-        return res.status(403).json({
+        res.status(400).json({
           status: "incorrect password format",
           message:
             "Password must have min 8 character and must contain (Uppercase,Lowercase and digits only) ",
@@ -123,12 +124,16 @@ exports.loginModel = async (email, password, secretKey, res) => {
       logger.info(
         "Incorrect email format. Email format should be:asif@email.com "
       );
-      return res.status(403).json({
+      res.status(400).json({
         status: "incorrect email format",
         message: "email format should be: asif@email.com  ",
       });
     }
   } catch (err) {
     logger.info(err);
+    res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
   }
 };
