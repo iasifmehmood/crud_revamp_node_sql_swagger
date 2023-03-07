@@ -3,7 +3,7 @@ const password_schema = require("../services/passwordValidation");
 const email_validator = require("../services/emailValidation");
 
 exports.logInvalidationCheck = (req, res, next) => {
-  console.log("validation started");
+  logger.info("validation started");
   const { email, password } = req.body;
   if (!email_validator.validate(email)) {
     logger.info(

@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-router.post("/adduser", signUpvalidationCheck, controller.signup);
+router.post("/signup", signUpvalidationCheck, controller.signup);
 router.post("/login", logInvalidationCheck, controller.login);
 router.post("/profile", verifyToken, controller.userProfile);
 router.get("/logout", controller.logout);

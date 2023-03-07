@@ -26,13 +26,13 @@ const sendMail = async (email, name) => {
 
     await transport.sendMail(mailOptions, function (error, info) {
       if (error) {
-        logger.info(error);
+        logger.error(error);
       } else {
         logger.info("mail send successfully", info.response);
       }
     });
   } catch (error) {
-    logger.info(error.message);
+    logger.error(error.message);
   }
 };
 

@@ -15,11 +15,11 @@ const signup = async (req, res) => {
         status: "success",
         message: "record is added succesfully",
       });
-      // sendMail(registration_data.email);
+      sendMail(registration_data.email);
     }
     logger.info(results);
   } catch (error) {
-    logger.info("error");
+    logger.error("error");
     return res.status(400).json({
       status: "fail",
       message:
@@ -69,7 +69,7 @@ const login = async (req, res) => {
       res.end();
     }
   } catch (error) {
-    logger.info(error);
+    logger.error(error);
     res.status(400).json({
       status: "fail",
       message: error.message,
