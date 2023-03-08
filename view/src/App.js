@@ -3,11 +3,13 @@ import SignIn from "./components/logIn";
 import SignUp from "./components/signup";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Profile from "./components/profile";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Profile />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<SignIn />} />
       </Routes>

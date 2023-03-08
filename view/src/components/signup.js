@@ -36,17 +36,17 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-  const [tollData, setTollData] = useState({
+  const [signUpData, setSignUpData] = useState({
     email: "",
     password: "",
     confirm_password: "",
     cnic: "",
   });
 
-  const { email, password, confirm_password, cnic } = tollData; //const destructiong for accessing tollData.entry_point etc
+  const { email, password, confirm_password, cnic } = signUpData; //const destructiong for accessing signUpData.entry_point etc
 
   const onInputChange = e => {
-    setTollData({ ...tollData, [e.target.name]: e.target.value });
+    setSignUpData({ ...signUpData, [e.target.name]: e.target.value });
   };
 
   let navigate = useNavigate();
@@ -54,7 +54,10 @@ export default function SignUp() {
   const handleSubmit = async event => {
     event.preventDefault();
     try {
-      let response = await axios.post("http://localhost:4000/signup", tollData); //, signUp
+      let response = await axios.post(
+        "http://localhost:4000/signup",
+        signUpData
+      ); //, signUp
       swal(response.data.message);
       navigate("/login");
     } catch (error) {

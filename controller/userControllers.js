@@ -15,7 +15,7 @@ const signup = async (req, res) => {
         status: "success",
         message: "Use signup successfully",
       });
-      sendMail(registration_data.email);
+      // sendMail(registration_data.email);
     }
     logger.info(results);
   } catch (error) {
@@ -90,7 +90,10 @@ const logout = (req, res) => {
     expires: new Date(Date.now() + 2 * 1000),
     httpOnly: true,
   });
-  res.send("logged out succesfully");
+  res.status(200).json({
+    status: "success",
+    message: "logged out succesfully",
+  });
 };
 module.exports = {
   signup,
