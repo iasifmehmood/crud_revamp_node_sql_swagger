@@ -33,14 +33,8 @@ const login = async (req, res) => {
     const secretKey = process.env.secretKey;
     const { email, password } = req.body;
     const [results] = await loginModel(email);
-
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Please Provide an email and password",
-      });
-    }
-
     logger.info(results);
+
     if (!results || !(await bcrypt.compare(password, results[0].password))) {
       res.status(401).json({
         message: "Email or Password is incorrect",
