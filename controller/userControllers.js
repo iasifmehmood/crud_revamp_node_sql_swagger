@@ -33,7 +33,6 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const [results] = await loginModel(email);
     logger.info(results);
-    console.log(results[0].email);
 
     if (!results || !(await bcrypt.compare(password, results[0].password))) {
       res.status(401).json({
