@@ -11,7 +11,7 @@ exports.signUpvalidationCheck = (req, res, next) => {
       message: "password does not match re-enter password password ",
     });
   }
-  if (!(cnic.length === 13 && !cnic.match(/^[0-9]+$/) != null)) {
+  if (!(cnic.length === 13 && cnic.match(/^[0-9]+$/) != null)) {
     return res.status(400).json({
       status: "fail",
       message: "incorrect cnic or enter 13 digit cnic",
