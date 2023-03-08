@@ -19,10 +19,10 @@ const signup = async (req, res) => {
     }
     logger.info(results);
   } catch (error) {
-    logger.error("error");
+    console.log(error);
     return res.status(400).json({
       status: "fail",
-      message: error.msg + " Inserted data already exists or is not correct",
+      message: " Inserted data already exists or is not correct",
     });
   }
 };
