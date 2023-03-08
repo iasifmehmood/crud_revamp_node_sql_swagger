@@ -13,7 +13,7 @@ const signup = async (req, res) => {
     if (results.affectedRows == 1) {
       res.status(200).json({
         status: "success",
-        message: "record is added succesfully",
+        message: "Use signup successfully",
       });
       sendMail(registration_data.email);
     }
@@ -22,8 +22,7 @@ const signup = async (req, res) => {
     logger.error("error");
     return res.status(400).json({
       status: "fail",
-      message:
-        error.message + " Inserted data is not correct or already exists",
+      message: " Inserted data already exists or is not correct",
     });
   }
 };
@@ -34,10 +33,11 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const [results] = await loginModel(email);
     logger.info(results);
+    console.log(results[0].email);
 
     if (!results || !(await bcrypt.compare(password, results[0].password))) {
       res.status(401).json({
-        message: "Email or Password is incorrect",
+        message: "Password is incorrect: please enter correct password",
       });
     } else {
       const id = results[0].id;
@@ -57,8 +57,8 @@ const login = async (req, res) => {
       res.cookie("userRegistered", token, cookieOptions);
       res.header("auth-token", token).status(200).json({
         token,
-        status: "success (token in header)",
-        success: "User has been logged in",
+        status: "success",
+        message: "User has been logged in",
       });
       res.end();
     }
@@ -66,7 +66,7 @@ const login = async (req, res) => {
     logger.error(error);
     res.status(400).json({
       status: "fail",
-      message: error.message,
+      message: "email does not match, please provide correct email",
     });
   }
 };
