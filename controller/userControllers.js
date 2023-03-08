@@ -22,7 +22,7 @@ const signup = async (req, res) => {
     logger.error("error");
     return res.status(400).json({
       status: "fail",
-      message: " Inserted data already exists or is not correct",
+      message: error.msg + " Inserted data already exists or is not correct",
     });
   }
 };
@@ -33,39 +33,47 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const [results] = await loginModel(email);
     logger.info(results);
-
-    if (!results || !(await bcrypt.compare(password, results[0].password))) {
+    if (results.length === 0) {
       res.status(401).json({
-        message: "Password is incorrect: please enter correct password",
+        status: "fail",
+        message: "email does not found, please provide correct email",
       });
     } else {
-      const id = results[0].id;
+      if (!results || !(await bcrypt.compare(password, results[0].password))) {
+        res.status(401).json({
+          status: "success",
+          message: "Password is incorrect: please enter correct password",
+        });
+      } else {
+        const id = results[0].id;
 
-      const token = jwt.sign({ id, email }, secretKey, {
-        expiresIn: process.env.JWT_EXPIRES,
-      });
+        const token = jwt.sign({ id, email }, secretKey, {
+          expiresIn: process.env.JWT_EXPIRES,
+        });
 
-      logger.info("the token has been generated " + token);
+        logger.info("the token has been generated " + token);
 
-      const cookieOptions = {
-        expires: new Date(
-          Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
-        ), //converted into milli sec
-        httpOnly: true,
-      };
-      res.cookie("userRegistered", token, cookieOptions);
-      res.header("auth-token", token).status(200).json({
-        token,
-        status: "success",
-        message: "User has been logged in",
-      });
-      res.end();
+        const cookieOptions = {
+          expires: new Date(
+            Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+          ), //converted into milli sec
+          httpOnly: true,
+        };
+        res.cookie("userRegistered", token, cookieOptions);
+
+        res.header("auth-token", token).status(200).json({
+          token,
+          status: "success",
+          message: "User has been logged in",
+        });
+        res.end();
+      }
     }
   } catch (error) {
     logger.error(error);
     res.status(400).json({
       status: "fail",
-      message: "email does not match, please provide correct email",
+      message: error.message,
     });
   }
 };
