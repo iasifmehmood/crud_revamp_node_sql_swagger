@@ -36,7 +36,7 @@ const login = async (req, res) => {
     if (results.length === 0) {
       res.status(401).json({
         status: "fail",
-        message: "email does not found, please provide correct email",
+        message: "email does not found, please register with your email",
       });
     } else {
       if (!results || !(await bcrypt.compare(password, results[0].password))) {
@@ -59,14 +59,14 @@ const login = async (req, res) => {
           ), //converted into milli sec
           httpOnly: true,
         };
-        res.cookie("userRegistered", token, cookieOptions);
 
-        res.header("auth-token", token).status(200).json({
+        res.set("Authorization", `bearer ${token}`);
+        res.set("Access-Control-Expose-Headers", "Authorization");
+        return res.status(200).json({
           token,
           status: "success",
           message: "User has been logged in",
         });
-        res.end();
       }
     }
   } catch (error) {

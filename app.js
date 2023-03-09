@@ -4,14 +4,14 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const user_routes = require("./route/userRoutes.js");
 
+/**********************POST API ************************** */
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 /*********************Authen**************************** */
 const dotenv = require("dotenv");
 dotenv.config();
 app.use(cors());
-
-/**********************POST API ************************** */
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 /***********************************Swagger API Testing******************* */
 
