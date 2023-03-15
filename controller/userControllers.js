@@ -84,18 +84,22 @@ const login = async (req, res) => {
 const userProfile = async (req, res) => {
   const secretKey = process.env.secretKey;
   const token = req.token;
-  const decryptedData = await decryptedPayload(token);
-  logger.info(decryptedData);
-  jwt.verify(token, secretKey, err => {
-    if (err) {
-      res.send({ result: "invalid token" });
-    } else {
-      res.json({
-        message: "token is valid",
-        decryptedData,
-      });
-    }
-  });
+
+  try {
+    const decryptedData = await decryptedPayload(token);
+    logger.info(decryptedData);
+    jwt.verify(token, secretKey, err => {
+      if (!err) {
+        res.json({
+          status: "success",
+          message: "token is valid",
+          decryptedData,
+        });
+      }
+    });
+  } catch (error) {
+    res.send({ status: "fail", message: "invalid token" });
+  }
 };
 
 const logout = (req, res) => {
