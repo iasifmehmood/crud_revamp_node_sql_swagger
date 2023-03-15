@@ -7,7 +7,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const crypto = require("crypto");
 const { generateToken } = require("../services/generateToken");
-
+const { decryptedPayload } = require("../services/generateToken");
 const signup = async (req, res) => {
   try {
     const registration_data = req.body;
@@ -81,30 +81,32 @@ const login = async (req, res) => {
   }
 };
 
-const userProfile = (req, res) => {
-  // const secretKey = process.env.secretKey;
-  // logger.info(req.token);
-  // jwt.verify(req.token, secretKey, (err, authData) => {
-  //   if (err) {
-  //     res.send({ result: "invalid token" });
-  //   } else {
-  //     res.json({
-  //       message: "token is valid",
-  //       authData,
-  //     });
-  //   }
-  // });
+const userProfile = async (req, res) => {
+  const secretKey = process.env.secretKey;
+  const token = req.token;
+  const decryptedData = await decryptedPayload(token);
+  logger.info(decryptedData);
+  jwt.verify(token, secretKey, err => {
+    if (err) {
+      res.send({ result: "invalid token" });
+    } else {
+      res.json({
+        message: "token is valid",
+        decryptedData,
+      });
+    }
+  });
 };
 
 const logout = (req, res) => {
-  // res.cookie("userRegistered", "logout", {
-  //   expires: new Date(Date.now() + 2 * 1000),
-  //   httpOnly: true,
-  // });
-  // res.status(200).json({
-  //   status: "success",
-  //   message: "logged out succesfully",
-  // });
+  res.cookie("userRegistered", "logout", {
+    expires: new Date(Date.now() + 2 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({
+    status: "success",
+    message: "logged out succesfully",
+  });
 };
 module.exports = {
   signup,
