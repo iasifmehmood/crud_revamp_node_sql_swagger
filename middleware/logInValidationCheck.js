@@ -5,6 +5,7 @@ const email_validator = require("../services/emailValidation");
 exports.logInvalidationCheck = (req, res, next) => {
   logger.info("validation started");
   const { email, password } = req.body;
+
   if (!email || !password) {
     return res.status(400).json({
       message: "Please Provide an email and password",
@@ -16,6 +17,7 @@ exports.logInvalidationCheck = (req, res, next) => {
         message: "email format should be: asif@email.com  ",
       });
     }
+
     if (!password_schema.validate(password)) {
       return res.status(400).json({
         status: "incorrect password format",
@@ -24,5 +26,6 @@ exports.logInvalidationCheck = (req, res, next) => {
       });
     }
   }
+
   next();
 };

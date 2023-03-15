@@ -5,13 +5,14 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
-const crypto = require("crypto");
 const { generateToken } = require("../services/generateToken");
 const { decryptedPayload } = require("../services/generateToken");
+
 const signup = async (req, res) => {
   try {
     const registration_data = req.body;
     const [results] = await signupModel(registration_data);
+
     if (results.affectedRows == 1) {
       res.status(200).json({
         status: "success",
@@ -31,10 +32,10 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const secretKey = process.env.secretKey;
     const { email, password } = req.body;
     const [results] = await loginModel(email);
     logger.info(results);
+
     if (results.length === 0) {
       res.status(401).json({
         status: "fail",
@@ -63,8 +64,10 @@ const login = async (req, res) => {
           httpOnly: true,
         };
 
+        res.cookie("userRegistered", token, cookieOptions);
         res.set("Authorization", `bearer ${token}`);
         res.set("Access-Control-Expose-Headers", "Authorization");
+
         return res.status(200).json({
           token,
           status: "success",
@@ -107,6 +110,7 @@ const logout = (req, res) => {
     expires: new Date(Date.now() + 2 * 1000),
     httpOnly: true,
   });
+
   res.status(200).json({
     status: "success",
     message: "logged out succesfully",
