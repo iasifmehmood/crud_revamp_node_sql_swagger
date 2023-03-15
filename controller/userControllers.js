@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
+const crypto = require("crypto");
+const { generateToken } = require("../services/generateToken");
 
 const signup = async (req, res) => {
   try {
@@ -46,11 +48,12 @@ const login = async (req, res) => {
         });
       } else {
         const id = results[0].id;
+        const payload = {
+          id,
+          email,
+        };
 
-        const token = jwt.sign({ id, email }, secretKey, {
-          expiresIn: process.env.JWT_EXPIRES,
-        });
-
+        const token = generateToken(payload);
         logger.info("the token has been generated " + token);
 
         const cookieOptions = {
