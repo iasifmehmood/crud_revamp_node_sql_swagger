@@ -85,6 +85,72 @@
           }
         }
       }
+    },
+    "/forget": {
+      "post": {
+        "tags": ["Employees"],
+        "summary": "Create a new employee in system",
+        "requestBody": {
+          "description": "Employee Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/forgetPassword"
+              }
+            }
+          }
+        },
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New Employee Created"
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          },
+          "404": {
+            "description": "server cannot find the requested resource."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/reset": {
+      "post": {
+        "tags": ["Employees"],
+        "summary": "Create a new employee in system",
+        "requestBody": {
+          "description": "Employee Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/resetPassword"
+              }
+            }
+          }
+        },
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New Employee Created"
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          },
+          "404": {
+            "description": "server cannot find the requested resource."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -109,6 +175,42 @@
             "type": "string",
             "format": "varchar(13)",
             "example": "3740561125275"
+          }
+        },
+
+        "xml": {
+          "name": "emp"
+        }
+      },
+      "forgetPassword": {
+        "required": ["email"],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "asif-mehmood@hotmail.com"
+          }
+        },
+
+        "xml": {
+          "name": "emp"
+        }
+      },
+      "resetPassword": {
+        "required": ["token", "confirm_password", "password"],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "token that is sent to your email"
+          },
+          "confirm_password": {
+            "type": "string",
+            "example": "asifmehmooD123"
+          },
+          "password": {
+            "type": "string",
+            "example": "asifmehmooD123"
           }
         },
 

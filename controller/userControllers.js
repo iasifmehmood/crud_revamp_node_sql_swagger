@@ -94,7 +94,7 @@ const getPasswordLink = async (req, res) => {
   const { email } = req.body;
   try {
     const [results] = await loginModel(email); // getting email from db
-    logger.info(results[0]);
+    logger.info("results[0]", results[0]);
 
     if (results.length === 0) {
       res.status(401).json({
@@ -107,6 +107,7 @@ const getPasswordLink = async (req, res) => {
       };
       // const token = randToken.generate(20);
       const token = generateToken(payload);
+
       resetEmail(email, token);
       res.send({
         status: "success",
@@ -123,11 +124,14 @@ const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
     const secretKey = process.env.secretKey;
+
     const decryptedData = await decryptedPayload(token);
-    logger.info(decryptedData);
-    console.log("decryted", decryptedData.email);
+
+    logger.info("decrypted data", decryptedData);
+    logger.info("decryted email", decryptedData.email);
 
     const [results] = await loginModel(decryptedData.email);
+
     logger.info(results);
 
     if (results.length === 0) {
@@ -143,7 +147,7 @@ const resetPassword = async (req, res) => {
       if (!err) {
         if (results[0].email === decryptedData.email) {
           const [rows] = await updatePassword(results[0].email, password);
-          // console.log(rows);
+          // logger.info(rows);
           if (rows.affectedRows == 1) {
             return res.json({
               status: "success",
@@ -155,7 +159,7 @@ const resetPassword = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
+    logger.info(error);
     res.json({
       status: "fail",
       message: "Your link has been expired",
