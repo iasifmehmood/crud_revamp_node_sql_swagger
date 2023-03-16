@@ -34,7 +34,10 @@ exports.generateToken = payload => {
       encrypted_payload: encryptedPayload,
     },
     secret,
-    { algorithm: "HS256" }
+    { algorithm: "HS256" },
+    {
+      expiresIn: "24h", // expires in 24 hours
+    }
   );
 
   return token;

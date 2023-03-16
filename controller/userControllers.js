@@ -1,5 +1,9 @@
 const logger = require("../logger");
-const { signupModel, loginModel } = require("../model/userModels");
+const {
+  signupModel,
+  loginModel,
+  updatePassword,
+} = require("../model/userModels");
 const sendMail = require("./sendMailController");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -7,6 +11,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { generateToken } = require("../services/generateToken");
 const { decryptedPayload } = require("../services/generateToken");
+const resetEmail = require("./resetEmail");
+const randToken = require("rand-token");
 
 const signup = async (req, res) => {
   try {
@@ -84,6 +90,79 @@ const login = async (req, res) => {
   }
 };
 
+const getPasswordLink = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const [results] = await loginModel(email); // getting email from db
+    logger.info(results[0]);
+
+    if (results.length === 0) {
+      res.status(401).json({
+        status: "fail",
+        message: "email does not found, please register with your email",
+      });
+    } else {
+      const payload = {
+        email,
+      };
+      // const token = randToken.generate(20);
+      const token = generateToken(payload);
+      resetEmail(email, token);
+      res.send({
+        status: "success",
+        message: "password reset link sent successfully",
+      });
+    }
+  } catch (error) {
+    logger.info(error);
+    res.send({ status: "fail", message: error });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    const secretKey = process.env.secretKey;
+    const decryptedData = await decryptedPayload(token);
+    logger.info(decryptedData);
+    console.log("decryted", decryptedData.email);
+
+    const [results] = await loginModel(decryptedData.email);
+    logger.info(results);
+
+    if (results.length === 0) {
+      return res.status(401).json({
+        status: "fail",
+        message: "email does not found, please register with your email",
+      });
+    }
+
+    logger.info("db email", results[0].email);
+
+    jwt.verify(token, secretKey, async err => {
+      if (!err) {
+        if (results[0].email === decryptedData.email) {
+          const [rows] = await updatePassword(results[0].email, password);
+          // console.log(rows);
+          if (rows.affectedRows == 1) {
+            return res.json({
+              status: "success",
+              message: "token is valid and password is updated",
+              decryptedData,
+            });
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "fail",
+      message: "Your link has been expired",
+    });
+  }
+};
+
 const userProfile = async (req, res) => {
   const secretKey = process.env.secretKey;
   const token = req.token;
@@ -121,4 +200,6 @@ module.exports = {
   login,
   userProfile,
   logout,
+  getPasswordLink,
+  resetPassword,
 };

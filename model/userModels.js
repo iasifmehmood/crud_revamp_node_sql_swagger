@@ -21,3 +21,14 @@ exports.loginModel = async email => {
     .promise()
     .query("SELECT * FROM users WHERE email = ?", [email]);
 };
+
+exports.updatePassword = async (email, password) => {
+  password = await bcrypt.hash(password, 13);
+
+  const updateData = "UPDATE users SET password=? WHERE email=?";
+
+  return connection.promise().query(
+    updateData,
+    [password, email] //2. saving in database
+  );
+};
