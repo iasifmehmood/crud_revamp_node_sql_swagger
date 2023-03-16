@@ -3,7 +3,7 @@ const logger = require("../logger");
 const dotenv = require("dotenv");
 dotenv.config();
 const { SMTP_MAIL, SMTP_PASSWORD } = process.env;
-const sendMail = async (email, name) => {
+const sendMail = async email => {
   const msg = "Thanks for registering";
 
   try {
@@ -21,8 +21,8 @@ const sendMail = async (email, name) => {
     const mailOptions = {
       from: SMTP_MAIL,
       to: email,
-      subject: `Welcome to our Company Mr. ${name}`,
-      html: `Dear <b>${name},</b> ${msg} `,
+      subject: `Welcome to our Company Mr. ${email}`,
+      html: `Dear <b>${email},</b> ${msg} `,
     };
 
     await transport.sendMail(mailOptions, function (error, info) {

@@ -24,7 +24,7 @@ const signup = async (req, res) => {
         status: "success",
         message: "Use signup successfully",
       });
-      // sendMail(registration_data.email);
+      sendMail(registration_data.email);
     }
     logger.info(results);
   } catch (error) {
@@ -50,7 +50,7 @@ const login = async (req, res) => {
     } else {
       if (!results || !(await bcrypt.compare(password, results[0].password))) {
         res.status(401).json({
-          status: "success",
+          status: "fail",
           message: "Password is incorrect: please enter correct password",
         });
       } else {
