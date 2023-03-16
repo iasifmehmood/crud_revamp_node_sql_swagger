@@ -12,7 +12,7 @@ dotenv.config();
 const { generateToken } = require("../services/generateToken");
 const { decryptedPayload } = require("../services/generateToken");
 const resetEmail = require("./resetEmail");
-const randToken = require("rand-token");
+// const randToken = require("rand-token");
 
 const signup = async (req, res) => {
   try {
