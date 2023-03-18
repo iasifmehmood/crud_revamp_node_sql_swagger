@@ -28,7 +28,7 @@ const signup = async (req, res) => {
     }
     logger.info(results);
   } catch (error) {
-    console.log(error);
+    // logger.info(error);
     return res.status(400).json({
       status: "fail",
       message: " Inserted data already exists or is not correct",
@@ -97,7 +97,7 @@ const getPasswordLink = async (req, res) => {
     logger.info("results[0]", results[0]);
 
     if (results.length === 0) {
-      res.status(401).json({
+      return res.status(401).json({
         status: "fail",
         message: "email does not found, please register with your email",
       });
@@ -108,15 +108,20 @@ const getPasswordLink = async (req, res) => {
       // const token = randToken.generate(20);
       const token = generateToken(payload);
 
-      resetEmail(email, token);
-      res.send({
-        status: "success",
-        message: "password reset link sent successfully",
-      });
+      const sent = await resetEmail(email, token);
+      // logger.info(sent.accepted);
+      // logger.info(sent.response);
+      let response = sent.response;
+      if (sent.accepted[0] === email && response.match("250")) {
+        return res.status(200).json({
+          status: "success",
+          message: "password reset link sent successfully",
+        });
+      }
     }
   } catch (error) {
     logger.info(error);
-    res.send({ status: "fail", message: error });
+    return res.status(400).json({ status: "fail", message: error });
   }
 };
 
@@ -149,7 +154,7 @@ const resetPassword = async (req, res) => {
           const [rows] = await updatePassword(results[0].email, password);
           // logger.info(rows);
           if (rows.affectedRows == 1) {
-            return res.json({
+            return res.status(200).json({
               status: "success",
               message: "token is valid and password is updated",
               decryptedData,
@@ -160,7 +165,7 @@ const resetPassword = async (req, res) => {
     });
   } catch (error) {
     logger.info(error);
-    res.json({
+    res.status(400).json({
       status: "fail",
       message: "Your link has been expired",
     });
@@ -176,7 +181,7 @@ const userProfile = async (req, res) => {
     logger.info(decryptedData);
     jwt.verify(token, secretKey, err => {
       if (!err) {
-        res.json({
+        return res.status(200).json({
           status: "success",
           message: "token is valid",
           decryptedData,
@@ -184,7 +189,7 @@ const userProfile = async (req, res) => {
       }
     });
   } catch (error) {
-    res.send({ status: "fail", message: "invalid token" });
+    res.status(200).json({ status: "fail", message: "invalid token" });
   }
 };
 
@@ -194,7 +199,7 @@ const logout = (req, res) => {
     httpOnly: true,
   });
 
-  res.status(200).json({
+  return res.status(200).json({
     status: "success",
     message: "logged out succesfully",
   });
