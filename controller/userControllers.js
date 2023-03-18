@@ -11,7 +11,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { generateToken } = require("../services/generateToken");
 const { decryptedPayload } = require("../services/generateToken");
-const resetEmail = require("./resetEmail");
+const resetPasswordEmail = require("./resetEmail");
 // const randToken = require("rand-token");
 
 const signup = async (req, res) => {
@@ -108,7 +108,7 @@ const getPasswordLink = async (req, res) => {
       // const token = randToken.generate(20);
       const token = generateToken(payload);
 
-      const sent = await resetEmail(email, token);
+      const sent = await resetPasswordEmail(email, token);
       // logger.info(sent.accepted);
       // logger.info(sent.response);
       let response = sent.response;
