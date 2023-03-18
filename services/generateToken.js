@@ -1,11 +1,15 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const dotenv = require("dotenv");
+const logger = require("../logger");
 dotenv.config();
 
 const encryptionKey = crypto.randomBytes(32);
+
 const secret = process.env.secretKey;
+
 const algorithm = "aes-256-cbc";
+
 const encrypt = (payload, key) => {
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv(algorithm, key, iv);
@@ -51,7 +55,8 @@ exports.decryptedPayload = token => {
   };
 
   const decryptedPayload = verifyAndDecrypt(token, encryptionKey);
-  console.log(decryptedPayload);
+
+  // logger.info(decryptedPayload);
 
   return decryptedPayload;
 };

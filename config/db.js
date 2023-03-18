@@ -1,5 +1,6 @@
 const mysql2 = require("mysql2");
 const dotenv = require("dotenv");
+const logger = require("../logger");
 dotenv.config();
 
 const connection = mysql2.createConnection({
@@ -10,8 +11,8 @@ const connection = mysql2.createConnection({
 });
 
 connection.connect(error => {
-  if (error) return console.log(error);
-  console.log("db connection successfull");
+  if (error) return logger.error(error);
+  logger.info("db connection successfull");
 });
 
 module.exports = connection;

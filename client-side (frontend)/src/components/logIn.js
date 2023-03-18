@@ -57,7 +57,6 @@ export default function SignIn() {
       let response = await axios.post("http://localhost:4000/login", loginData); //, logIn
       swal(response.data.message);
       navigate("/");
-      // console.log(response.data.message);
     } catch (error) {
       swal(error.response.data.message);
     }
