@@ -1,6 +1,11 @@
 const bcrypt = require("bcrypt");
 const connection = require("../config/db");
 
+/*
+@Signup_Model:
+    Description:                      will run insert query and return inserted values 
+*/
+
 exports.signupModel = async registration_data => {
   const { email, password, cnic } = registration_data;
 
@@ -16,11 +21,21 @@ exports.signupModel = async registration_data => {
   );
 };
 
+/*
+@Login_Model:
+    Description:                      will run select query and return email 
+*/
+
 exports.loginModel = async email => {
   return connection
     .promise()
     .query("SELECT * FROM users WHERE email = ?", [email]);
 };
+
+/*
+@Update_Password:
+    Description:                      will run update query and return updated data 
+*/
 
 exports.updatePassword = async (email, password) => {
   password = await bcrypt.hash(password, 13);

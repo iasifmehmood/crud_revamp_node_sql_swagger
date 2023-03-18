@@ -29,12 +29,15 @@ exports.sendRegistrationMail = email => {
     transport.sendMail(mailOptions, function (error, info) {
       if (error) {
         reject(error);
+
         // logger.error(error);
+
         return error;
       } else {
         resolve(info);
         // logger.info("info.accepted", info.accepted);
         // logger.info("info.accepted", info);
+
         return info;
       }
     });
@@ -43,6 +46,7 @@ exports.sendRegistrationMail = email => {
 
 exports.resetPasswordMail = (email, token) => {
   // logger.info("reset email starting here");
+
   const msg = `<a href="http://localhost:4000/reset">Reset Link</a>
   `;
 
@@ -68,12 +72,16 @@ exports.resetPasswordMail = (email, token) => {
     transport.sendMail(mailOptions, function (error, info) {
       if (error) {
         reject(error);
+
         // logger.error(error);
+
         return error;
       } else {
         resolve(info);
+
         // logger.info("info.accepted", info.accepted);
         // logger.info("info.accepted", info);
+
         return info;
       }
     });
