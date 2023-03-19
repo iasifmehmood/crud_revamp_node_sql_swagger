@@ -40,7 +40,7 @@ exports.generateToken = payload => {
     secret,
     { algorithm: "HS256" },
     {
-      expiresIn: "24h", // expires in 24 hours
+      expiresIn: "1200s", // expires in 24 hours
     }
   );
 

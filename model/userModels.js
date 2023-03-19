@@ -6,7 +6,7 @@ const connection = require("../config/db");
     Description:                      will run insert query and return inserted values 
 */
 
-exports.signupModel = async registration_data => {
+exports.insertSignUpData = async registration_data => {
   const { email, password, cnic } = registration_data;
 
   registration_data.password = await bcrypt.hash(password, 13);
@@ -26,7 +26,7 @@ exports.signupModel = async registration_data => {
     Description:                      will run select query and return email 
 */
 
-exports.loginModel = async email => {
+exports.getEmailFromDb = async email => {
   return connection
     .promise()
     .query("SELECT * FROM users WHERE email = ?", [email]);

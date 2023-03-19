@@ -1,8 +1,8 @@
 const logger = require("../logger");
 const {
-  signupModel,
-  loginModel,
   updatePassword,
+  insertSignUpData,
+  getEmailFromDb,
 } = require("../model/userModels");
 const sendMail = require("./sendMailController");
 const jwt = require("jsonwebtoken");
@@ -16,7 +16,7 @@ const { decryptedPayload } = require("../services/generateToken");
 @Signup:
     Description:                      user will signup using email,password and cnic and will be notified via email.
     Variable_registration_data:       will get signup data from body.
-    Function_signupModel():           will add registration data to the database by running insert query.
+    Function_insertSignUpData():      will add registration data to the database by running insert query.
     Function_sendRegistrationMail():  will sent registration email notification to the user. 
     Variable_sent:                    will store promise (sent email details like status, response etc.) returned by sendRegistrationMail().
     Conditionals:                     first condition will check if email is sent to user who is registering and second codition will check its status if it is "250" it means email sent successfully.
@@ -28,7 +28,7 @@ const signup = async (req, res) => {
     const registration_data = req.body;
     const { email } = req.body;
 
-    await signupModel(registration_data);
+    await insertSignUpData(registration_data);
 
     const sent = await sendMail.sendRegistrationMail(registration_data.email);
 
@@ -61,7 +61,7 @@ const signup = async (req, res) => {
 /*
 @Login:
     Description:                      user will login using email and password.
-    Function_loginModel:              will run select query and return email entered by user.
+    Function_getEmailFromDb:          will run select query and return email entered by user.
     Variable_results:                 will store result of select query.
     Conditionals:                     1) first if statement will check email provided by the user doest not exists in the database.
                                       2) second if condition will check if password provided by the user matches with the password in the database.
@@ -74,7 +74,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const [results] = await loginModel(email);
+    const [results] = await getEmailFromDb(email);
 
     // logger.info(results);
 
@@ -131,7 +131,7 @@ const login = async (req, res) => {
 /*
 @Get_Password_Link_Via_Email:
     Description:                      user can reset password by providing registered email and user will receive email with token to verify identity. 
-    Function_loginModel:              will run select query and return email entered by user.
+    Function_getEmailFromDb:          will run select query and return email entered by user.
     Variable_results:                 will store result of select query.
     Conditionals:                     1) first if statement will check email provided by the user doest not exists in the database.
                                       2) else will run in the best case scenario which will generate token and sent it via headers.
@@ -144,7 +144,7 @@ const login = async (req, res) => {
 const getPasswordLink = async (req, res) => {
   const { email } = req.body;
   try {
-    const [results] = await loginModel(email); // getting email from db
+    const [results] = await getEmailFromDb(email); // getting email from db
 
     // logger.info("results[0]", results[0]);
 
@@ -189,7 +189,7 @@ const getPasswordLink = async (req, res) => {
 @Reset_Password:
     Description:                      user can reset password by providing registered email and user will receive email with token to verify identity. 
     Function_decryptedPayload():      will take encrypted token and decrypted it to extract email.
-    Function.loginModel():            will take email address from decrypted token and will match it with database.
+    Function.getEmailFromDb():        will take email address from decrypted token and will match it with database.
     Conditionals:                     1) first if statement will check email provided by the user doest not exists in the database.
                                       2) second condition will check if the password is updated if yes it will change rows.Affected to 1.
     Function_jwt.Verify():            1) Best Case Scenario: checks if email exists in the database and update it.
@@ -208,7 +208,7 @@ const resetPassword = async (req, res) => {
     // logger.info("decrypted data", decryptedData);
     // logger.info("decryted email", decryptedData.email);
 
-    const [results] = await loginModel(decryptedData.email);
+    const [results] = await getEmailFromDb(decryptedData.email);
 
     // logger.info(results);
 

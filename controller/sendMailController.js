@@ -65,7 +65,7 @@ exports.resetPasswordMail = (email, token) => {
     from: SMTP_MAIL,
     to: email,
     subject: `Reset Password Link`,
-    html: `Dear <b>${email}, here is your reset code ${token}</b> ${msg} `,
+    html: `Dear <b>${email}, here is your reset code ${token} Kindly enter your code in this link</b> ${msg} `,
   };
 
   return new Promise(function (resolve, reject) {
