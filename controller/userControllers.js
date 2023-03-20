@@ -193,8 +193,10 @@ const getPasswordLink = async (req, res) => {
     Description:                      user can reset password by providing registered email and user will receive email with token to verify identity. 
     Function_decryptedPayload():      will take encrypted token and decrypted it to extract email.
     Function.getEmailFromDb():        will take email address from decrypted token and will match it with email in the database.
-    Conditionals:                     1) first if statement will check email provided by the user doest not exists in the database.
-                                      2) second condition will check if the password is updated if yes it will change rows.Affected to 1.
+    Conditionals:                     1) first if statement (results.length === 0) will check email provided by the user doest not exists in the database.
+                                      2) second if statement (token_result.length > 0) will check if token is already used.
+                                      3) third condition will check if the password is updated if yes it will change rows.Affected to 1.
+                                      4) foruth if statement (passwordAlreadyExists === true) will check if user entered same password or new password. If it enter same password system will ask user to enter new password.
     Function_getTokenFromDb()         will run select query to see where token and email is already present if they already exists than it will show error token is already used.
     Function_insertTokenInDb()        will insert password reset token to database with email address which will be used by getTokenFromDb() to verify token exist in the database.
     Function_jwt.Verify():            1) Best Case Scenario: checks if email exists in the database and update it.
@@ -207,6 +209,7 @@ const getPasswordLink = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     let { token, password } = req.body;
+
     const secretKey = process.env.secretKey;
 
     const decryptedData = await decryptedPayload(token);
@@ -236,12 +239,25 @@ const resetPassword = async (req, res) => {
       });
     }
 
-    await insertTokenInDb(token, results[0].email);
+    let passwordAlreadyExists = await bcrypt.compare(
+      password,
+      results[0].password
+    );
+
+    if (passwordAlreadyExists === true) {
+      return res.status(200).json({
+        status: "fail",
+        message:
+          "Password Already Exists! Please enter new password to secure your account",
+      });
+    }
 
     jwt.verify(token, secretKey, async err => {
       if (!err) {
         if (results[0].email === decryptedData.email) {
           const [rows] = await updatePassword(results[0].email, password);
+
+          await insertTokenInDb(token, results[0].email);
 
           // logger.info(rows);
 
