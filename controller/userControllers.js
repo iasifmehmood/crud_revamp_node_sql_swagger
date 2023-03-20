@@ -272,6 +272,7 @@ const resetPassword = async (req, res) => {
               emailResponse.substring(0, 3) === emailSuccessResponse
             ) {
               await insertTokenInDb(token, results[0].email);
+
               return res.status(200).json({
                 status: "success",
                 message: "Password is updated please login using new password",
