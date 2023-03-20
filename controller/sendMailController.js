@@ -4,6 +4,11 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { SMTP_MAIL, SMTP_PASSWORD } = process.env;
 
+/*
+@Send_Registration_Email:
+    Description:                    will be used to notify user that you have been successfully registered
+*/
+
 exports.sendRegistrationMail = email => {
   const msg = "Thanks for registering";
 
@@ -43,6 +48,11 @@ exports.sendRegistrationMail = email => {
     });
   });
 };
+
+/*
+@Send_Password_Reset_Email:
+    Description:                    will send user token/link which is then use to update password
+*/
 
 exports.sendPasswordResetMail = (email, token) => {
   // logger.info("reset email starting here");
@@ -87,6 +97,11 @@ exports.sendPasswordResetMail = (email, token) => {
     });
   });
 };
+
+/*
+@Send_Password_Updated_Email:
+    Description:                    will notify user via email after updating password
+*/
 
 exports.sendPasswordUpdatedMail = email => {
   const msg =

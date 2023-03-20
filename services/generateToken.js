@@ -31,6 +31,11 @@ const decrypt = (encrypted, key) => {
   return JSON.parse(decrypted.toString());
 };
 
+/*
+@Generate_Token:
+    Description_Case_1:                    will generate encrypted jwt token base on payload which will be use to login into the system.  
+    Description_Case_2:                    will generate encrypted jwt token base on payload (which is email in this case).
+*/
 exports.generateToken = payload => {
   const encryptedPayload = encrypt(payload, encryptionKey);
   const token = jwt.sign(
@@ -40,12 +45,18 @@ exports.generateToken = payload => {
     secret,
     { algorithm: "HS256" },
     {
-      expiresIn: "1200s", // expires in 24 hours
+      expiresIn: "1200s", // expires in 20 minutes
     }
   );
 
   return token;
 };
+
+/*
+@Decrypted_Payload:
+    Description_Case_1:                    will decrypt jwt token base on token (which will help user to verify payload and login to the system)
+    Description_Case_2:                    will decrypt jwt token base on token (which is sent to user via email). Which will help user to update password.
+*/
 
 exports.decryptedPayload = token => {
   const verifyAndDecrypt = (token, key) => {
