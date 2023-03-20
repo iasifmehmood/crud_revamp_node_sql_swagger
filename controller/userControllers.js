@@ -257,8 +257,6 @@ const resetPassword = async (req, res) => {
         if (results[0].email === decryptedData.email) {
           const [rows] = await updatePassword(results[0].email, password);
 
-          await insertTokenInDb(token, results[0].email);
-
           // logger.info(rows);
 
           if (rows.affectedRows === 1) {
@@ -273,6 +271,7 @@ const resetPassword = async (req, res) => {
               sent.accepted[0] === results[0].email &&
               emailResponse.substring(0, 3) === emailSuccessResponse
             ) {
+              await insertTokenInDb(token, results[0].email);
               return res.status(200).json({
                 status: "success",
                 message: "Password is updated please login using new password",
