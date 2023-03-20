@@ -3,6 +3,9 @@ const {
   updatePassword,
   insertSignUpData,
   getEmailFromDb,
+  insertToken,
+  insertTokenInDb,
+  getTokenFromDb,
 } = require("../model/userModels");
 const sendMail = require("./sendMailController");
 const jwt = require("jsonwebtoken");
@@ -160,7 +163,7 @@ const getPasswordLink = async (req, res) => {
 
       const token = generateToken(payload);
 
-      const sent = await sendMail.resetPasswordMail(email, token);
+      const sent = await sendMail.sendPasswordResetMail(email, token);
 
       // logger.info(sent.accepted);
       // logger.info(sent.response);
@@ -189,18 +192,21 @@ const getPasswordLink = async (req, res) => {
 @Reset_Password:
     Description:                      user can reset password by providing registered email and user will receive email with token to verify identity. 
     Function_decryptedPayload():      will take encrypted token and decrypted it to extract email.
-    Function.getEmailFromDb():        will take email address from decrypted token and will match it with database.
+    Function.getEmailFromDb():        will take email address from decrypted token and will match it with email in the database.
     Conditionals:                     1) first if statement will check email provided by the user doest not exists in the database.
                                       2) second condition will check if the password is updated if yes it will change rows.Affected to 1.
+    Function_getTokenFromDb()         will run select query to see where token and email is already present if they already exists than it will show error token is already used.
+    Function_insertTokenInDb()        will insert password reset token to database with email address which will be used by getTokenFromDb() to verify token exist in the database.
     Function_jwt.Verify():            1) Best Case Scenario: checks if email exists in the database and update it.
                                       2) Worst Case Scenario: email doest not exist and throws error.
-    Function_updatePassword():        will run update query to update password after satisfying all above mentioned conditions
+    Function_updatePassword():        will run update query to update password after satisfying all above mentioned conditions.
+    Function_sendPasswordUpdatedMail  will send email to user after new password is set.
     Catch:                            will catch error if something else happend other than above mentioned scenarios.
 */
 
 const resetPassword = async (req, res) => {
   try {
-    const { token, password } = req.body;
+    let { token, password } = req.body;
     const secretKey = process.env.secretKey;
 
     const decryptedData = await decryptedPayload(token);
@@ -221,6 +227,17 @@ const resetPassword = async (req, res) => {
 
     // logger.info("db email", results[0].email);
 
+    const [token_result] = await getTokenFromDb(token, results[0].email);
+
+    if (token_result.length > 0) {
+      return res.status(401).json({
+        status: "fail",
+        message: "Token is already used",
+      });
+    }
+
+    await insertTokenInDb(token, results[0].email);
+
     jwt.verify(token, secretKey, async err => {
       if (!err) {
         if (results[0].email === decryptedData.email) {
@@ -229,11 +246,24 @@ const resetPassword = async (req, res) => {
           // logger.info(rows);
 
           if (rows.affectedRows === 1) {
-            return res.status(200).json({
-              status: "success",
-              message: "token is valid and password is updated",
-              decryptedData,
-            });
+            const sent = await sendMail.sendPasswordUpdatedMail(
+              results[0].email
+            );
+
+            let emailResponse = sent.response;
+            let emailSuccessResponse = "250";
+
+            if (
+              sent.accepted[0] === results[0].email &&
+              emailResponse.substring(0, 3) === emailSuccessResponse
+            ) {
+              return res.status(200).json({
+                status: "success",
+                message:
+                  "token is valid and password is updated please check your email",
+                decryptedData,
+              });
+            }
           }
         }
       }

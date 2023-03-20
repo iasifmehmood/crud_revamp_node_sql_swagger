@@ -47,3 +47,33 @@ exports.updatePassword = async (email, password) => {
     [password, email] //2. saving in database
   );
 };
+
+/*
+@Insert_Token_In_Database:
+    Description:                      will run insert query and return updated data 
+*/
+
+exports.insertTokenInDb = async (token, email) => {
+  const data = [token, email];
+
+  const insert_query = "INSERT into tokens (token_db,email) values(?,?)";
+
+  return await connection.promise().query(
+    insert_query, //2. saving in database
+    data
+  );
+};
+
+/*
+@Get_Token_From_Database:
+    Description:                      will run select query and return token and email address 
+*/
+
+exports.getTokenFromDb = async (token, email) => {
+  return connection
+    .promise()
+    .query("SELECT * FROM tokens WHERE token_db = ? AND email=?", [
+      token,
+      email,
+    ]);
+};

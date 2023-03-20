@@ -44,7 +44,7 @@ exports.sendRegistrationMail = email => {
   });
 };
 
-exports.resetPasswordMail = (email, token) => {
+exports.sendPasswordResetMail = (email, token) => {
   // logger.info("reset email starting here");
 
   const msg = `<a href="http://localhost:4000/reset">Reset Link</a>
@@ -79,6 +79,47 @@ exports.resetPasswordMail = (email, token) => {
       } else {
         resolve(info);
 
+        // logger.info("info.accepted", info.accepted);
+        // logger.info("info.accepted", info);
+
+        return info;
+      }
+    });
+  });
+};
+
+exports.sendPasswordUpdatedMail = email => {
+  const msg =
+    "Your password has been updated use your password to login into the system";
+
+  const transport = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+      user: SMTP_MAIL,
+      pass: SMTP_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: SMTP_MAIL,
+    to: email,
+    subject: `Password Updated ${email}`,
+    html: `Dear <b>${email},</b> ${msg} `,
+  };
+
+  return new Promise(function (resolve, reject) {
+    transport.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        reject(error);
+
+        // logger.error(error);
+
+        return error;
+      } else {
+        resolve(info);
         // logger.info("info.accepted", info.accepted);
         // logger.info("info.accepted", info);
 
