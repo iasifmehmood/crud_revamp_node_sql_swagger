@@ -3,9 +3,15 @@ const app = express(); // express instance has been created and will be access b
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const user_routes = require("./route/userRoutes.js");
+// const { fileStorage, fileFilter } = require("./services/fileStorage.js");
+
+const multer = require("multer");
 
 /**********************POST API ************************** */
 app.use(express.urlencoded({ extended: true }));
+// app.use(
+//   multer({ storage: fileStorage, fileFilter: fileFilter }).single("file")
+// );
 app.use(express.json());
 
 /*********************Authen**************************** */

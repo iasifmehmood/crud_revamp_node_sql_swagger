@@ -1,0 +1,1 @@
+{"code":"ER_BAD_DB_ERROR","errno":1049,"level":"error","sqlMessage":"Unknown database 'signup_login'","sqlState":"42000","timestamp":"2023-03-25T20:44:19.268Z"}

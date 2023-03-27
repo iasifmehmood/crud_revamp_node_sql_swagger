@@ -57,7 +57,7 @@ exports.sendRegistrationMail = email => {
 exports.sendPasswordResetMail = (email, token) => {
   // logger.info("reset email starting here");
 
-  const msg = `<a href="http://localhost:4000/reset">Reset Link</a>
+  const msg = `<a href="http://localhost:4000/reset/${token}">Reset Link</a>
   `;
 
   const transport = nodemailer.createTransport({
@@ -75,7 +75,7 @@ exports.sendPasswordResetMail = (email, token) => {
     from: SMTP_MAIL,
     to: email,
     subject: `Reset Password Link`,
-    html: `Dear <b>${email}, here is your reset code ${token} Kindly enter your code in this link</b> ${msg} `,
+    html: `Dear <b>${email},</b> <p>here is your reset code ${token} <p>Kindly enter your code in this link</p> </p> ${msg} `,
   };
 
   return new Promise(function (resolve, reject) {

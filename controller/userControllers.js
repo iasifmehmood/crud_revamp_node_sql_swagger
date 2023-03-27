@@ -14,6 +14,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { generateToken } = require("../services/generateToken");
 const { decryptedPayload } = require("../services/generateToken");
+const { fileUploadCheck } = require("../middleware/fileUpload");
 
 /*
 @Signup:
@@ -75,6 +76,7 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
   try {
+    logger.info("login");
     const { email, password } = req.body;
 
     const [results] = await getEmailFromDb(email);
@@ -145,6 +147,8 @@ const login = async (req, res) => {
 */
 
 const getPasswordLink = async (req, res) => {
+  logger.info("send Link");
+
   const { email } = req.body;
   try {
     const [results] = await getEmailFromDb(email); // getting email from db
@@ -208,6 +212,7 @@ const getPasswordLink = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
+    logger.info("reset password router");
     let { token, password } = req.body;
 
     const secretKey = process.env.secretKey;
@@ -331,6 +336,31 @@ const logout = (req, res) => {
   });
 };
 
+/*
+@File_Upload:
+    Description:                      user can upload single image: png,jpgg,jpeg or pdf documents 
+    Conditionals:                     if req.file contains some file it will display file is successfully uploaded message
+    Catch:                            will catch error if something else happend other than above mentioned scenarios.
+*/
+
+const fileUpload = async (req, res) => {
+  // console.log("controller", req.file);
+  try {
+    if (req.file) {
+      res.status(200).json({
+        status: "success",
+        messsage: "File is successfully upload",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      status: "success",
+      messsage: "File error",
+      error,
+    });
+  }
+};
+
 module.exports = {
   signup,
   login,
@@ -338,4 +368,5 @@ module.exports = {
   logout,
   getPasswordLink,
   resetPassword,
+  fileUpload,
 };

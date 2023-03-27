@@ -77,3 +77,12 @@ exports.getTokenFromDb = async (token, email) => {
       email,
     ]);
 };
+
+exports.getEncryptionkeyFromDb = async encrpytion_key => {
+  return connection
+    .promise()
+    .query(
+      "SELECT * FROM tokens WHERE token_db = ? AND email=? AND encrpytion_key=?",
+      [token, email, encrpytion_key]
+    );
+};

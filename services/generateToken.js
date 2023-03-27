@@ -33,9 +33,10 @@ const decrypt = (encrypted, key) => {
 
 /*
 @Generate_Token:
-    Description_Case_1:                    will generate encrypted jwt token base on payload which will be use to login into the system.  
+    Description_Case_1:                    will generate encrypted jwt token base on payload which will be use to login into the system.
     Description_Case_2:                    will generate encrypted jwt token base on payload (which is email in this case).
 */
+
 exports.generateToken = payload => {
   const encryptedPayload = encrypt(payload, encryptionKey);
   const token = jwt.sign(
