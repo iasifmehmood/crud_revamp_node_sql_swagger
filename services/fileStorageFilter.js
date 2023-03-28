@@ -34,7 +34,14 @@ exports.fileFilter = (req, file, cb) => {
     cb(null, true);
   } else {
     // console.log("other files are not allowed");
+    // req.fileTypeCheck = file.mimetype;
+
+    req.fileExtensionCheck = file.originalname.split(".").pop();
+
     cb(null, false);
-    return cb(new Error("only jpg,jpeg,png and pdf allow"));
+    return cb(
+      new Error("only jpg,jpeg,png and pdf allow"),
+      req.fileExtensionCheck
+    );
   }
 };
