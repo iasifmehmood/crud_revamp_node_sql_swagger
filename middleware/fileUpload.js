@@ -18,7 +18,7 @@ exports.fileUploadCheck = (req, res, next) => {
 
       return res.status(400).json({
         status: "fail",
-        message: `Uploading has failed (only jpg,jpeg,png and pdf allow). You Uploaded ${req.fileExtensionCheck} file `,
+        message: `Uploading has failed `,
         err,
       });
     } else if (err) {

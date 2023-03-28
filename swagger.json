@@ -6,10 +6,7 @@
     "description": "It is complete login and signup system with proper validation and error handling, implemented with nodejs, express, javascript and mysql"
   },
   "servers": [
-    {
-      "url": "http://localhost:4000/",
-      "description": "SWAGGER HOST"
-    }
+    { "url": "http://localhost:4000/", "description": "SWAGGER HOST" }
   ],
   "tags": [
     {
@@ -38,18 +35,12 @@
         },
         "produces": ["application/json"],
         "responses": {
-          "200": {
-            "description": "New Employee Created"
-          },
-          "400": {
-            "description": "Failed. Bad post data."
-          },
+          "200": { "description": "New Employee Created" },
+          "400": { "description": "Failed. Bad post data." },
           "404": {
             "description": "server cannot find the requested resource."
           },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
@@ -71,18 +62,12 @@
         },
         "produces": ["application/json"],
         "responses": {
-          "200": {
-            "description": "User login successfully"
-          },
-          "400": {
-            "description": "Failed. Bad post data."
-          },
+          "200": { "description": "User login successfully" },
+          "400": { "description": "Failed. Bad post data." },
           "404": {
             "description": "server cannot find the requested resource."
           },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
@@ -104,18 +89,12 @@
         },
         "produces": ["application/json"],
         "responses": {
-          "200": {
-            "description": "New Employee Created"
-          },
-          "400": {
-            "description": "Failed. Bad post data."
-          },
+          "200": { "description": "New Employee Created" },
+          "400": { "description": "Failed. Bad post data." },
           "404": {
             "description": "server cannot find the requested resource."
           },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
@@ -137,18 +116,52 @@
         },
         "produces": ["application/json"],
         "responses": {
-          "200": {
-            "description": "New Employee Created"
-          },
-          "400": {
-            "description": "Failed. Bad post data."
-          },
+          "200": { "description": "New Employee Created" },
+          "400": { "description": "Failed. Bad post data." },
           "404": {
             "description": "server cannot find the requested resource."
           },
-          "500": {
-            "description": "Internal Server Error"
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "summary": "Uploads a file.",
+
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "parameters": [
+                {
+                  "in": "formData",
+                  "name": "upfile",
+                  "type": "file",
+                  "description": "The file to upload."
+                }
+              ],
+              "schema": {
+                "required": ["file"],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "file"
+                  }
+                }
+              }
+            }
           }
+        },
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "New Employee Created" },
+          "400": { "description": "Failed. Bad post data." },
+          "404": {
+            "description": "server cannot find the requested resource."
+          },
+          "500": { "description": "Internal Server Error" }
         }
       }
     }
@@ -159,18 +172,9 @@
         "required": ["email", "confirm_password", "password", "cnic"],
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "example": "asif-mehmood@hotmail.com"
-          },
-          "confirm_password": {
-            "type": "string",
-            "example": "asifmehmooD123"
-          },
-          "password": {
-            "type": "string",
-            "example": "asifmehmooD123"
-          },
+          "email": { "type": "string", "example": "asif-mehmood@hotmail.com" },
+          "confirm_password": { "type": "string", "example": "asifmehmooD123" },
+          "password": { "type": "string", "example": "asifmehmooD123" },
           "cnic": {
             "type": "string",
             "format": "varchar(13)",
@@ -178,41 +182,26 @@
           }
         },
 
-        "xml": {
-          "name": "emp"
-        }
+        "xml": { "name": "emp" }
       },
       "logIn": {
         "required": ["email", "password"],
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "example": "asif"
-          },
-          "password": {
-            "type": "string",
-            "example": "asif@email.com"
-          }
+          "email": { "type": "string", "example": "asif" },
+          "password": { "type": "string", "example": "asif@email.com" }
         },
 
-        "xml": {
-          "name": "emp2"
-        }
+        "xml": { "name": "emp2" }
       },
       "forgetPassword": {
         "required": ["email"],
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "example": "asif-mehmood@hotmail.com"
-          }
+          "email": { "type": "string", "example": "asif-mehmood@hotmail.com" }
         },
 
-        "xml": {
-          "name": "emp"
-        }
+        "xml": { "name": "emp" }
       },
       "resetPassword": {
         "required": ["token", "confirm_password", "password"],
@@ -222,20 +211,13 @@
             "type": "string",
             "example": "token that is sent to your email"
           },
-          "confirm_password": {
-            "type": "string",
-            "example": "asifmehmooD123"
-          },
-          "password": {
-            "type": "string",
-            "example": "asifmehmooD123"
-          }
+          "confirm_password": { "type": "string", "example": "asifmehmooD123" },
+          "password": { "type": "string", "example": "asifmehmooD123" }
         },
 
-        "xml": {
-          "name": "emp"
-        }
-      }
+        "xml": { "name": "emp" }
+      },
+      "uploadSchema": { "type": "string", "format": "binary" }
     }
   }
 }
