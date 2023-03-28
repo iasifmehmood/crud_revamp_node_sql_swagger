@@ -125,7 +125,7 @@
         }
       }
     },
-    "/upload": {
+    "/file/upload": {
       "post": {
         "tags": ["User Single File Upload"],
         "summary": "Uploads a file.",
