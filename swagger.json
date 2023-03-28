@@ -141,22 +141,15 @@
                 }
               ],
               "schema": {
-                "required": ["file"],
                 "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary",
-                    "example": "file"
-                  }
-                }
+                "$ref": "#/components/schemas/uploadFile"
               }
             }
           }
         },
         "produces": ["application/json"],
         "responses": {
-          "200": { "description": "New Employee Created" },
+          "200": { "description": "File has been upload" },
           "400": { "description": "Failed. Bad post data." },
           "404": {
             "description": "server cannot find the requested resource."
@@ -217,7 +210,17 @@
 
         "xml": { "name": "emp" }
       },
-      "uploadSchema": { "type": "string", "format": "binary" }
+      "uploadFile": {
+        "required": ["file"],
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "example": "file"
+          }
+        }
+      }
     }
   }
 }
