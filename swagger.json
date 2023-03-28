@@ -19,7 +19,7 @@
   "paths": {
     "/signup": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["User Signup"],
         "summary": "register a new user in the system",
         "requestBody": {
           "description": "Employee Object",
@@ -46,7 +46,7 @@
     },
     "/login": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["User Login"],
         "summary": "login a user in the system",
         "requestBody": {
           "description": "Employee Object",
@@ -73,7 +73,7 @@
     },
     "/forget": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["User Forget Password"],
         "summary": "send email to user with reset password link/token",
         "requestBody": {
           "description": "Employee Object",
@@ -100,7 +100,7 @@
     },
     "/reset": {
       "post": {
-        "tags": ["Users"],
+        "tags": ["User Reset Password"],
         "summary": "reset password based upon token provided in the email",
         "requestBody": {
           "description": "Employee Object",
@@ -127,19 +127,11 @@
     },
     "/upload": {
       "post": {
+        "tags": ["User Single File Upload"],
         "summary": "Uploads a file.",
-
         "requestBody": {
           "content": {
             "multipart/form-data": {
-              "parameters": [
-                {
-                  "in": "formData",
-                  "name": "upfile",
-                  "type": "file",
-                  "description": "The file to upload."
-                }
-              ],
               "schema": {
                 "type": "object",
                 "$ref": "#/components/schemas/uploadFile"
